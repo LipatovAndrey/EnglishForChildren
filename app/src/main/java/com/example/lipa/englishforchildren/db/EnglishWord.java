@@ -5,6 +5,7 @@ package com.example.lipa.englishforchildren.db;
  */
 
 class EnglishWord {
+
     private String mWord;
     private String mTranslate;
     private int mResourceID;
@@ -29,7 +30,6 @@ class EnglishWord {
         return mResourceID;
     }
 
-    
     public void setResourceID(int resourceID) {
         mResourceID = resourceID;
     }
