@@ -22,15 +22,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mSqLiteEnglishWordsDBHelper = new SQLiteEnglishWordsDBHelper(this);
-
-
-        EnglishWord ew= new EnglishWord();
-        ew.setWord("first");
-        ew.setTranslate("первый");
-        ew.setResourceID(1);
-        mSqLiteEnglishWordsDBHelper.insertEnglishWord(ew);
-
 
         mMyGridLayout = (GridLayout) findViewById(R.id.MyGridLayout);
         for (int i = 0; i <10 ; i++) {
@@ -47,5 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         Toast.makeText(this, v.toString(), Toast.LENGTH_SHORT).show();
+        ((MyApplication)getApplication()).mSqLiteEnglishWordsDBHelper.readAllEnglishWords();
     }
 }

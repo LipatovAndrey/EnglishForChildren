@@ -32,17 +32,15 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("onCreateDB", db.getPath());
+        Log.d("SQLiteEnglishWordsDB", "onCreate");
         String SQL_CREATE_TABLE =
                 "CREATE TABLE " + EnglishWordContract.Word.TABLE_NAME + " ( "
                         + EnglishWordContract.Word._ID + " INTEGER PRYMARY KEY AUTOINCREMENT, "
                         + EnglishWordContract.Word.WORD + " TEXT NOT NULL, "
                         + EnglishWordContract.Word.TRANSLATE + " TEXT NOT NULL, "
                         + EnglishWordContract.Word.RESOURCE + " INTEGER NOT NULL );";
-
-        Log.d(SQL_CREATE_TABLE, " ");
         db.execSQL(SQL_CREATE_TABLE);
-
+        Log.d(SQL_CREATE_TABLE, " ");
     }
 
     @Override
@@ -77,7 +75,7 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper{
         SQLiteDatabase database = getReadableDatabase();
         Cursor cursor = database.query(EnglishWordContract.Word.TABLE_NAME, null, null, null, null, null,null);
         cursor.moveToFirst();
-        while (!cursor.isLast()){
+        while (cursor.isLast()){
             EnglishWord newEnglishWord = new EnglishWord();
             String word = cursor.getString(cursor.getColumnIndex(EnglishWordContract.Word.WORD));
             String translate = cursor.getString(cursor.getColumnIndex(EnglishWordContract.Word.TRANSLATE));
