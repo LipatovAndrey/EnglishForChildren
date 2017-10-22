@@ -15,7 +15,7 @@ import java.util.List;
  * Created by lipa on 10.10.17.
  */
 
-public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper{
+public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "english_words_db";
     public static final int DATABASE_VERSION = 2;
@@ -25,8 +25,8 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper{
         super(context, name, factory, version);
     }
 
-    public SQLiteEnglishWordsDBHelper(Context context){
-        super(context,DATABASE_NAME, null, DATABASE_VERSION);
+    public SQLiteEnglishWordsDBHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         Log.d("DBHelper", "constructor");
     }
 
@@ -35,7 +35,7 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper{
         Log.d("SQLiteEnglishWordsDB", "onCreate");
         String SQL_CREATE_TABLE =
                 "CREATE TABLE " + EnglishWordContract.Word.TABLE_NAME + " ( "
-                        + EnglishWordContract.Word._ID + " INTEGER PRYMARY KEY AUTOINCREMENT, "
+                        + EnglishWordContract.Word._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                         + EnglishWordContract.Word.WORD + " TEXT NOT NULL, "
                         + EnglishWordContract.Word.TRANSLATE + " TEXT NOT NULL, "
                         + EnglishWordContract.Word.RESOURCE + " INTEGER NOT NULL );";
@@ -48,38 +48,41 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper{
 
     }
 
-    public long insertEnglishWord(EnglishWord englishWord){
+    public long insertEnglishWord(EnglishWord englishWord) {
         Log.d("insertEnglishWord", "start" + getDatabaseName());
-        long id=0;
+        long id = 0;
+
         SQLiteDatabase database = getWritableDatabase();
         Log.d("getWritableDatabase", "start");
 
         ContentValues contentValues = new ContentValues();
+
         contentValues.put(EnglishWordContract.Word.WORD, englishWord.getWord());
         contentValues.put(EnglishWordContract.Word.TRANSLATE, englishWord.getTranslate());
-        //contentValues.put(EnglishWordContract.Word.RESOURCE, englishWord.getResourceID());
-
-
+        contentValues.put(EnglishWordContract.Word.RESOURCE, englishWord.getResourceID());
 
         database.beginTransaction();
         database.insert(EnglishWordContract.Word.TABLE_NAME, null, contentValues);
+        database.setTransactionSuccessful();
         database.endTransaction();
 
         database.close();
         return id;
     }
 
-    public List<EnglishWord> readAllEnglishWords(){
+    public List<EnglishWord> readAllEnglishWords() {
         Log.d("readAllEnglishWords", "start");
         List<EnglishWord> englishWordList = new ArrayList<>();
         SQLiteDatabase database = getReadableDatabase();
-        Cursor cursor = database.query(EnglishWordContract.Word.TABLE_NAME, null, null, null, null, null,null);
+        Cursor cursor = database.query(EnglishWordContract.Word.TABLE_NAME, null, null, null, null, null, null);
+
         cursor.moveToFirst();
-        while (cursor.isLast()){
+        while (!cursor.isAfterLast()) {
             EnglishWord newEnglishWord = new EnglishWord();
             String word = cursor.getString(cursor.getColumnIndex(EnglishWordContract.Word.WORD));
             String translate = cursor.getString(cursor.getColumnIndex(EnglishWordContract.Word.TRANSLATE));
             int resource = cursor.getInt(cursor.getColumnIndex(EnglishWordContract.Word.RESOURCE));
+            Log.d("ew", word + " " + translate + " ");
             newEnglishWord.setWord(word);
             newEnglishWord.setTranslate(translate);
             newEnglishWord.setResourceID(resource);
@@ -89,7 +92,8 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper{
         database.close();
         return englishWordList;
     }
-    public void initDataBase(){
+
+    public void initDataBase() {
         Log.d("initDataBase", "start");
         EnglishWord englishWord = new EnglishWord();
         englishWord.setResourceID(1);
