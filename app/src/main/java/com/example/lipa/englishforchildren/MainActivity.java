@@ -39,12 +39,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Toast.makeText(this, v.toString(), Toast.LENGTH_SHORT).show();
         Log.d("click", "click");
-        EnglishWord ew = new EnglishWord();
-        ew.setResourceID(1);
-        ew.setWord("dfg");
-        ew.setTranslate("df");
+//        EnglishWord ew = new EnglishWord();
+//        ew.setResourceID(1);
+//        ew.setWord("dfg");
+//        ew.setTranslate("df");
 
-        ((MyApplication)getApplication()).mSqLiteEnglishWordsDBHelper.insertEnglishWord(ew);
+       // ((MyApplication)getApplication()).mSqLiteEnglishWordsDBHelper.insertEnglishWord(ew);
        // ((MyApplication)getApplication()).mSqLiteEnglishWordsDBHelper.insertEnglishWord(ew);
 
         ((MyApplication)getApplication()).mSqLiteEnglishWordsDBHelper.readAllEnglishWords();

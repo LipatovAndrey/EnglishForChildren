@@ -17,5 +17,6 @@ public class MyApplication extends Application{
         super.onCreate();
         Log.d("Application", "onCreate");
         mSqLiteEnglishWordsDBHelper = new SQLiteEnglishWordsDBHelper(this);
+        mSqLiteEnglishWordsDBHelper.initDB();
     }
 }
