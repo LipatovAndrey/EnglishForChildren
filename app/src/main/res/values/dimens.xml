@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="corner_radius">16dp</dimen>
+    <dimen name="height_maingrid_image">80dp</dimen>
+    <dimen name="width_maingrid_image">120dp</dimen>
+    <dimen name="stroke_width">4dp</dimen>
+</resources>

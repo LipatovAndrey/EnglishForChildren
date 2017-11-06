@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,7 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lipa on 10.10.17.
@@ -29,7 +34,7 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper {
     static final String COLUMN_NAME = "word";
 
     private Context mContext;
-//https://metanit.com/java/android/14.3.php
+
 
     public SQLiteEnglishWordsDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -45,24 +50,12 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         Log.d("SQLiteEnglishWordsDB", "onCreate");
-
-//        String SQL_CREATE_TABLE =
-//                "CREATE TABLE " + EnglishWordContract.Word.TABLE_NAME + " ( "
-//                        + EnglishWordContract.Word._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-//                        + EnglishWordContract.Word.WORD + " TEXT NOT NULL, "
-//                        + EnglishWordContract.Word.TRANSLATE + " TEXT NOT NULL, "
-//                        + EnglishWordContract.Word.RESOURCE + " INTEGER NOT NULL );";
-//        db.execSQL(SQL_CREATE_TABLE);
-//       Log.d("SQLcreateTable", SQL_CREATE_TABLE);
-        // createDatabase();
-
     }
 
     public void initDB() {
         //Копирование данных из готовой ДБ, лежащей в assets в DB_PATH
-        Log.d("create DB", "start");
+        Log.d("init DB", "start");
         File file = new File(DB_PATH);
         InputStream inputStream = null;
         OutputStream outputStream = null;
@@ -80,18 +73,16 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper {
                     outputStream.write(buffer, 0, length);
                     Log.d("read", "from inputStream");
                 }
-
                 outputStream.flush();
                 inputStream.close();
                 outputStream.close();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             Log.d("file", " exist");
         }
-        Log.d("create DB", "finish");
+        Log.d("init DB", "finish");
     }
 
     @Override
@@ -99,54 +90,54 @@ public class SQLiteEnglishWordsDBHelper extends SQLiteOpenHelper {
 
     }
 
-//    public long insertEnglishWord(EnglishWord englishWord) {
-//        Log.d("insertEnglishWord", "start" + getDatabaseName());
-//        long id = 0;
-//
-//        SQLiteDatabase database = getWritableDatabase();
-//        Log.d("getWritableDatabase", "start");
-//
-//        ContentValues contentValues = new ContentValues();
-//
-//        contentValues.put(EnglishWordContract.Word.WORD, englishWord.getWord());
-//        contentValues.put(EnglishWordContract.Word.TRANSLATE, englishWord.getTranslate());
-//        contentValues.put(EnglishWordContract.Word.RESOURCE, englishWord.getResourceID());
-//
-//        database.beginTransaction();
-//        database.insert(EnglishWordContract.Word.TABLE_NAME, null, contentValues);
-//        database.setTransactionSuccessful();
-//        database.endTransaction();
-//
-//        database.close();
-//        return id;
-//    }
 
     public List<EnglishWord> readAllEnglishWords() {
         Log.d("readAllEnglishWords", "start");
         List<EnglishWord> englishWordList = new ArrayList<>();
 
         SQLiteDatabase database = open();
-
         Cursor cursor = database.query(EnglishWordContract.Word.TABLE_NAME, null, null, null, null, null, null);
-
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             EnglishWord newEnglishWord = new EnglishWord();
             String word = cursor.getString(cursor.getColumnIndex(EnglishWordContract.Word.WORD));
-            Log.d("words", word);
-//            String translate = cursor.getString(cursor.getColumnIndex(EnglishWordContract.Word.TRANSLATE));
-//            int resource = cursor.getInt(cursor.getColumnIndex(EnglishWordContract.Word.RESOURCE));
-//            Log.d("ew", word + " " + translate + " ");
-//            newEnglishWord.setWord(word);
-//            newEnglishWord.setTranslate(translate);
-//            newEnglishWord.setResourceID(resource);
-//            englishWordList.add(newEnglishWord);
+            String translate = cursor.getString(cursor.getColumnIndex(EnglishWordContract.Word.TRANSLATE));
+            Log.d("words", word + " " + translate);
             cursor.moveToNext();
         }
         database.close();
         return englishWordList;
     }
 
+
+    public Set<String> readGroups() {
+        Log.d("readGroups", "start");
+        SQLiteDatabase database = open();
+        Set<String> groups = new HashSet<>();
+        Cursor cursor = database.query(EnglishWordContract.Word.TABLE_NAME, null, null, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            groups.add(cursor.getString(cursor.getColumnIndex(EnglishWordContract.Word.GROUP)));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        database.close();
+        return groups;
+    }
+
+
+    public void loadGroupPNGImage(String fileName, ImageView imageView) {
+        InputStream inputStream = null;
+        try {
+            inputStream = mContext.getAssets().open(fileName + ".png");
+            Drawable d = Drawable.createFromStream(inputStream, null);
+            imageView.setImageDrawable(d);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
     public SQLiteDatabase open() {
         return SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READWRITE);

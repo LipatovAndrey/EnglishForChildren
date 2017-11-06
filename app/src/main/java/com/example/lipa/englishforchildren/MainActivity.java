@@ -1,37 +1,30 @@
 package com.example.lipa.englishforchildren;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.lipa.englishforchildren.db.EnglishWord;
-import com.example.lipa.englishforchildren.db.EnglishWordContract;
 import com.example.lipa.englishforchildren.db.SQLiteEnglishWordsDBHelper;
 
-import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     GridLayout mMyGridLayout;
     SQLiteEnglishWordsDBHelper mSqLiteEnglishWordsDBHelper;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mMyGridLayout = (GridLayout) findViewById(R.id.MyGridLayout);
-        for (int i = 0; i <10 ; i++) {
-            Button button = new Button(this);
-            button.setText("кнопка");
-            button.setOnClickListener(this);
-            mMyGridLayout.addView(button);
-        }
-
-
+        inflateElements();
 
     }
 
@@ -39,15 +32,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Toast.makeText(this, v.toString(), Toast.LENGTH_SHORT).show();
         Log.d("click", "click");
-//        EnglishWord ew = new EnglishWord();
-//        ew.setResourceID(1);
-//        ew.setWord("dfg");
-//        ew.setTranslate("df");
+        ((MyApplication) getApplication()).mSqLiteEnglishWordsDBHelper.readAllEnglishWords();
+    }
 
-       // ((MyApplication)getApplication()).mSqLiteEnglishWordsDBHelper.insertEnglishWord(ew);
-       // ((MyApplication)getApplication()).mSqLiteEnglishWordsDBHelper.insertEnglishWord(ew);
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void inflateElements() {
+        Set<String> groups = ((MyApplication) getApplication()).mSqLiteEnglishWordsDBHelper.readGroups();
+        mMyGridLayout = (GridLayout) findViewById(R.id.MyGridLayout);
 
-        ((MyApplication)getApplication()).mSqLiteEnglishWordsDBHelper.readAllEnglishWords();
+        for (String s : groups
+                ) {
+            ImageView imageView = new ImageView(this);
+            imageView.setBackground(getResources().getDrawable(R.drawable.my_image_button, null));
+            ((MyApplication) getApplication()).mSqLiteEnglishWordsDBHelper.loadGroupPNGImage(s, imageView);
+            imageView.setOnClickListener(this);
+            mMyGridLayout.addView(imageView);
+        }
 
     }
 }

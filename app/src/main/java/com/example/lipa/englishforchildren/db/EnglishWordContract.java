@@ -12,9 +12,9 @@ public class EnglishWordContract {
         public static final String TABLE_NAME = "english_words_table";
         public static final String WORD = "word";
         public static final String GROUP = "group";
-        public static final String GROUP_IMAGE_ID = "idGroupImage";
+        public static final String GROUP_RES = "id_group_image_resource";
         public static final String TRANSLATE = "translateWord";
-        public static final String RESOURCE = "idImage";
+        public static final String WORD_RES = "id_word_image_resource";
     }
 
 
